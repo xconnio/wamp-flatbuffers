@@ -2,4 +2,4 @@ clean:
 	rm -r wampproto
 
 gen-py:
-	flatc --python flatbuffers/*.fbs
+	flatc -p flatbuffers/message.fbs --gen-all

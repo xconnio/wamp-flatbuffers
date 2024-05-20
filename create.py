@@ -60,11 +60,11 @@ def main():
         message = Message.Message.GetRootAs(data)
         table = message.Message()
         if message.MessageType() == Messages.Messages.Welcome:
-            welcome = Welcome.Welcome.GetRootAs(table.Bytes, table.Pos)
-            print(welcome.SessionId(), welcome.Authrole())
+            welcome = Welcome.Welcome.GetRootAs(table.Bytes)
+            print("WELCOME", welcome.SessionId(), welcome.Authrole())
         elif message.MessageType() == Messages.Messages.Hello:
             hello = Hello.Hello.GetRootAs(table.Bytes)
-            print(hello.AuthmethodsLength(), hello.Authid())
+            print("HELLO", hello.AuthmethodsLength(), hello.Authid())
 
 
 

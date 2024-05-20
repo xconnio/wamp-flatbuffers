@@ -11,7 +11,7 @@ union Messages {
 }
 
 table Message {
-  message: Messages (required);
+  message: Messages;
 }
 
 root_type Message;
