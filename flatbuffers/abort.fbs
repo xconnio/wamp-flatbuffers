@@ -1,0 +1,6 @@
+namespace wampproto;
+
+table Abort {
+  reason:string;
+  session_id:long;
+}

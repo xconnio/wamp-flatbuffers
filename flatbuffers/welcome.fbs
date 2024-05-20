@@ -1,0 +1,6 @@
+namespace wampproto;
+
+table Welcome {
+  session_id:long;
+  authrole:string;
+}

@@ -1,0 +1,17 @@
+include "abort.fbs";
+include "hello.fbs";
+include "welcome.fbs";
+
+namespace wampproto;
+
+union Messages {
+  Abort,
+  Hello,
+  Welcome,
+}
+
+table Message {
+  message: Messages (required);
+}
+
+root_type Message;
