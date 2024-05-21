@@ -15,6 +15,14 @@ include "invocation.fbs";
 include "yield.fbs";
 include "result.fbs";
 
+// PubSub messages
+include "publish.fbs";
+include "published.fbs";
+include "subscribe.fbs";
+include "subscribed.fbs";
+include "unsubscribe.fbs";
+include "unsubscribed.fbs";
+
 
 namespace wampproto;
 
@@ -33,6 +41,13 @@ union Messages {
   Invocation,
   Yield,
   Result,
+
+  Publish,
+  Published,
+  Subscribe,
+  Subscribed,
+  UnSubscribe,
+  UnSubscribed,
 }
 
 table Message {
