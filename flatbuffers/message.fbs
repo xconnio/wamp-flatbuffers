@@ -23,6 +23,11 @@ include "subscribed.fbs";
 include "unsubscribe.fbs";
 include "unsubscribed.fbs";
 
+// control messages
+include "error.fbs";
+include "cancel.fbs";
+include "interrupt.fbs";
+
 
 namespace wampproto;
 
@@ -48,6 +53,10 @@ union Messages {
   Subscribed,
   UnSubscribe,
   UnSubscribed,
+
+  Error,
+  Cancel,
+  Interrupt,
 }
 
 table Message {

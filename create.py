@@ -3,11 +3,13 @@ from flatbuffers.builder import Builder
 from python.wampproto import (
     Message,
     Messages,
+
     # session establishment messages
     Hello,
     Welcome,
     Authenticate,
     Challenge,
+
     # RPC messages
     Call,
     Invocation,
@@ -17,6 +19,7 @@ from python.wampproto import (
     Registered,
     UnRegister,
     UnRegistered,
+
     # PubSub messages
     Publish,
     Published,
@@ -24,6 +27,11 @@ from python.wampproto import (
     Subscribed,
     UnSubscribe,
     UnSubscribed,
+
+    # control messages
+    Error,
+    Cancel,
+    Interrupt
 )
 
 
