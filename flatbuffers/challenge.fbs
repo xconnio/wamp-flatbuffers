@@ -1,0 +1,6 @@
+namespace wampproto;
+
+table Challenge {
+  authmethod:string;
+  challenge:string;
+}
