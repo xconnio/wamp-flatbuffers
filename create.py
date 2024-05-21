@@ -1,6 +1,6 @@
 from flatbuffers.builder import Builder
 
-from wampproto import Hello, Welcome, Message, Messages, Authenticate, Challenge
+from python.wampproto import Hello, Welcome, Message, Messages, Authenticate, Challenge
 
 
 def create_hello(realm: str, authid: str, auth_methods: list[str], auth_provider: str = "static") -> bytearray:
