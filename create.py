@@ -25,13 +25,10 @@ def create_hello(realm: str, authid: str, auth_methods: list[str], auth_provider
     end = Hello.End(builder)
     builder.Finish(end)
 
-    Message.Start(builder)
-    Message.AddMessage(builder, end)
-    Message.AddMessageType(builder, Messages.Messages.Hello)
-    end = Message.End(builder)
-    builder.Finish(end)
+    byte_data = builder.Output()
+    builder.Clear()
 
-    return builder.Output()
+    return union(builder, byte_data, Messages.Messages.Hello)
 
 
 def create_welcome(session_id: int, authrole: str) -> bytearray:
@@ -39,33 +36,45 @@ def create_welcome(session_id: int, authrole: str) -> bytearray:
     authrole = builder.CreateString(authrole)
 
     Welcome.Start(builder)
-    Welcome.AddSessionId(builder, session_id)
     Welcome.AddAuthrole(builder, authrole)
-    end = Welcome.End(builder)
+    Welcome.AddSessionId(builder, session_id)
+    welcome = Welcome.End(builder)
+    builder.Finish(welcome)
+
+    byte_data = builder.Output()
+    builder.Clear()
+
+    return union(builder, byte_data, Messages.Messages.Welcome)
+
+
+def union(builder: Builder, msg_bytes: bytearray, message_type: int):
+    byte_vector_offset = builder.CreateByteVector(msg_bytes)
 
     Message.Start(builder)
-    Message.AddMessageType(builder, Messages.Messages.Welcome)
-    Message.AddMessage(builder, end)
+    Message.AddMessageType(builder, message_type)
+    Message.AddMessage(builder, byte_vector_offset)
     end = Message.End(builder)
     builder.Finish(end)
 
-    return builder.Output()
+    byte_data = builder.Output()
+    builder.Clear()
+    return byte_data
 
 
 def main():
     hello_data = create_hello("realm1", "authid1", ["ticket"], "auth_provider")
-    welcome_data = create_welcome(1 << 53, "authrole1")
+    welcome_data = create_welcome(1 << 53, "authrole")
 
-    for data in [hello_data, welcome_data]:
+    for data in [welcome_data, hello_data]:
         message = Message.Message.GetRootAs(data)
-        table = message.Message()
         if message.MessageType() == Messages.Messages.Welcome:
-            welcome = Welcome.Welcome.GetRootAs(table.Bytes)
+            table = message.Message()
+            welcome = Welcome.Welcome.GetRootAs(table.Bytes, table.Pos + 4)
             print("WELCOME", welcome.SessionId(), welcome.Authrole())
         elif message.MessageType() == Messages.Messages.Hello:
-            hello = Hello.Hello.GetRootAs(table.Bytes)
-            print("HELLO", hello.AuthmethodsLength(), hello.Authid())
-
+            table = message.Message()
+            hello = Hello.Hello.GetRootAs(table.Bytes, table.Pos + 4)
+            print("HELLO", hello.Authid(), hello.Realm(), hello.AuthmethodsIsNone(), hello.Authprovider())
 
 
 if __name__ == "__main__":

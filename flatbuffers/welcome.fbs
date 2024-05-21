@@ -1,6 +1,6 @@
 namespace wampproto;
 
 table Welcome {
-  session_id:long;
+  session_id:ulong;
   authrole:string;
 }
