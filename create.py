@@ -1,6 +1,38 @@
 from flatbuffers.builder import Builder
 
-from python.wampproto import Hello, Welcome, Message, Messages, Authenticate, Challenge
+from python.wampproto import (
+    Message,
+    Messages,
+
+    # session establishment messages
+    Hello,
+    Welcome,
+    Authenticate,
+    Challenge,
+
+    # RPC messages
+    Call,
+    Invocation,
+    Yield,
+    Result,
+    Register,
+    Registered,
+    UnRegister,
+    UnRegistered,
+
+    # PubSub messages
+    Publish,
+    Published,
+    Subscribe,
+    Subscribed,
+    UnSubscribe,
+    UnSubscribed,
+
+    # control messages
+    Error,
+    Cancel,
+    Interrupt
+)
 
 
 def create_hello(realm: str, authid: str, auth_methods: list[str], auth_provider: str = "static") -> bytearray:
