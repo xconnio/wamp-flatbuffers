@@ -1,6 +1,6 @@
 from flatbuffers.builder import Builder
 
-from wampproto import Hello, Welcome, Message, Messages
+from wampproto import Hello, Welcome, Message, Messages, Authenticate, Challenge
 
 
 def create_hello(realm: str, authid: str, auth_methods: list[str], auth_provider: str = "static") -> bytearray:
@@ -47,6 +47,38 @@ def create_welcome(session_id: int, authrole: str) -> bytearray:
     return union(builder, byte_data, Messages.Messages.Welcome)
 
 
+def create_authenticate(signature: str) -> bytearray:
+    builder = Builder(1024)
+    signature = builder.CreateString(signature)
+
+    Authenticate.Start(builder)
+    Authenticate.AddSignature(builder, signature)
+    authenticate = Authenticate.End(builder)
+    builder.Finish(authenticate)
+
+    byte_data = builder.Output()
+    builder.Clear()
+
+    return union(builder, byte_data, Messages.Messages.Authenticate)
+
+
+def create_challenge(authmethod: str, challenge: str) -> bytearray:
+    builder = Builder(1024)
+    authmethod = builder.CreateString(authmethod)
+    challenge = builder.CreateString(challenge)
+
+    Challenge.Start(builder)
+    Challenge.AddAuthmethod(builder, authmethod)
+    Challenge.AddChallenge(builder, challenge)
+    challenge = Challenge.End(builder)
+    builder.Finish(challenge)
+
+    byte_data = builder.Output()
+    builder.Clear()
+
+    return union(builder, byte_data, Messages.Messages.Challenge)
+
+
 def union(builder: Builder, msg_bytes: bytearray, message_type: int):
     byte_vector_offset = builder.CreateByteVector(msg_bytes)
 
@@ -64,17 +96,24 @@ def union(builder: Builder, msg_bytes: bytearray, message_type: int):
 def main():
     hello_data = create_hello("realm1", "authid1", ["ticket"], "auth_provider")
     welcome_data = create_welcome(1 << 53, "authrole")
+    challenge_data = create_challenge("cryptosign", "yo")
+    authenticate_data = create_authenticate("ssssssssss")
 
-    for data in [welcome_data, hello_data]:
+    for data in [welcome_data, hello_data, challenge_data, authenticate_data]:
         message = Message.Message.GetRootAs(data)
+        table = message.Message()
         if message.MessageType() == Messages.Messages.Welcome:
-            table = message.Message()
             welcome = Welcome.Welcome.GetRootAs(table.Bytes, table.Pos + 4)
             print("WELCOME", welcome.SessionId(), welcome.Authrole())
         elif message.MessageType() == Messages.Messages.Hello:
-            table = message.Message()
             hello = Hello.Hello.GetRootAs(table.Bytes, table.Pos + 4)
             print("HELLO", hello.Authid(), hello.Realm(), hello.AuthmethodsIsNone(), hello.Authprovider())
+        elif message.MessageType() == Messages.Messages.Authenticate:
+            authenticate = Authenticate.Authenticate.GetRootAs(table.Bytes, table.Pos + 4)
+            print("AUTHENTICATE", authenticate.Signature())
+        elif message.MessageType() == Messages.Messages.Challenge:
+            challenge = Challenge.Challenge.GetRootAs(table.Bytes, table.Pos + 4)
+            print("CHALLENGE", challenge.Challenge())
 
 
 if __name__ == "__main__":

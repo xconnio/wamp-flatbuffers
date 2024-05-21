@@ -1,4 +1,6 @@
 include "abort.fbs";
+include "authenticate.fbs";
+include "challenge.fbs";
 include "hello.fbs";
 include "welcome.fbs";
 
@@ -6,6 +8,8 @@ namespace wampproto;
 
 union Messages {
   Abort,
+  Authenticate,
+  Challenge,
   Hello,
   Welcome,
 }
