@@ -1,0 +1,8 @@
+namespace wampproto;
+
+table Hello {
+  realm:string;
+  authid:string;
+  authmethods:[string];
+  authprovider:string;
+}
