@@ -2,4 +2,5 @@
 go/
 kotlin/
 dart/
+python/wampprotofbs/gen
 .venv/
