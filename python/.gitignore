@@ -3,3 +3,4 @@
 dist/
 build/
 wampprotofbs.egg-info/
+__pycache__/
