@@ -20,3 +20,13 @@ test:
 build-wheel:
 	pip wheel --no-deps -w dist .
 
+clean:
+	rm -rf .venv build dist wampprotofbs.egg-info
+
+publish-build:
+	rm -rf ./dist ./build ./wampprotofbs.egg-info/
+	.venv/bin/python -m build --sdist
+	.venv/bin/twine check dist/*
+	@echo ========================================================
+	@echo
+	@echo now run .venv/bin/twine upload dist/newly_created.tar.gz
