@@ -1,6 +1,6 @@
 from flatbuffers.builder import Builder
 
-from python.wampproto import (
+from wampprotofbs.gen import (
     Message,
     Messages,
 
